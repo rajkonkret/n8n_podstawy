@@ -1,0 +1,92 @@
+{
+  "name": "My workflow 2",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        144,
+        112
+      ],
+      "typeVersion": 1,
+      "id": "fc9a7390-e8c8-4542-810e-e2123afabd9e",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "formTitle": "user",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "tekst",
+              "placeholder": "tekst do wpisania"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.3,
+      "position": [
+        -512,
+        -64
+      ],
+      "id": "794f4bfe-d42a-4275-bc6b-deb1a89f7eba",
+      "name": "n8n Form Trigger",
+      "webhookId": "fecaebff-966d-4720-956f-f1d33c9196b4"
+    },
+    {
+      "parameters": {
+        "fromEmail": "automat@rajkonkret.pl",
+        "toEmail": "rajkonkret660@gmail.com",
+        "subject": "test n8n ",
+        "emailFormat": "both",
+        "text": "=Mail testowy\n {{ $json.tekst }}",
+        "html": "=<h1>Mail testowy<h1> <br>\n{{ $json.tekst }}",
+        "options": {
+          "appendAttribution": true
+        }
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        -304,
+        -64
+      ],
+      "id": "b4d86c1a-1393-4cab-ab37-dcd606d13238",
+      "name": "Send email",
+      "webhookId": "3c91d705-9d5a-434a-a1ce-cdd061dd852e",
+      "credentials": {
+        "smtp": {
+          "id": "rYUOpkUcA3G0lXue",
+          "name": "SMTP account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "n8n Form Trigger": {
+      "main": [
+        [
+          {
+            "node": "Send email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "02d11b76-c5a1-4690-9862-6ef00eb46f13",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1abda7cbc926ee79baed789f59b664741e50dd6d0077bc94acec768895110088"
+  },
+  "id": "DaOH6wAZxmpLcsJO",
+  "tags": []
+}

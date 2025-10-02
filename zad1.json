@@ -1,0 +1,177 @@
+{
+  "name": "zad1",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Dane",
+        "formDescription": "testowy formularz",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "podaj email",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Podaj cel kontaktu",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Zakup usług"
+                  },
+                  {
+                    "option": "Reklamacja"
+                  },
+                  {
+                    "option": "Test"
+                  }
+                ]
+              },
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.3,
+      "position": [
+        -464,
+        48
+      ],
+      "id": "6a6e9418-320d-4341-9a22-f67e35c11dcf",
+      "name": "On form submission",
+      "webhookId": "ff566630-eb5c-4aaf-b39d-3e6b2873c878"
+    },
+    {
+      "parameters": {
+        "fromEmail": "automat@rajkonkret.pl",
+        "toEmail": "rajkonkret660@gmail.com",
+        "subject": "Nowy kontakt w sprawie",
+        "html": "Klient wypełnił formularz kontaktowy\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        80,
+        64
+      ],
+      "id": "0a227fe2-4766-44c6-a6d5-29a962ddae12",
+      "name": "Kontakt do klienta",
+      "webhookId": "31e4b6e2-1885-4e2a-aa11-abe6b17b1935",
+      "credentials": {
+        "smtp": {
+          "id": "rYUOpkUcA3G0lXue",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "7c787916-6185-4312-87ee-b681be2cd997",
+              "leftValue": "={{ $json['Podaj cel kontaktu'] }}",
+              "rightValue": "Test",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -240,
+        48
+      ],
+      "id": "ea91bc49-785b-41fe-8acc-83b0638a8ac4",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "fromEmail": "automat@rajkonkret.pl",
+        "toEmail": "rajkonkret660@gmail.com",
+        "subject": "Email testowy",
+        "html": "Email Testowy",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        -16,
+        -80
+      ],
+      "id": "0344b954-5ae8-4fc5-bc86-1b3e41d652ec",
+      "name": "Kontakt do klienta1",
+      "webhookId": "31e4b6e2-1885-4e2a-aa11-abe6b17b1935",
+      "credentials": {
+        "smtp": {
+          "id": "rYUOpkUcA3G0lXue",
+          "name": "SMTP account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Kontakt do klienta": {
+      "main": [
+        []
+      ]
+    },
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Kontakt do klienta1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Kontakt do klienta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "10f4bb87-6d53-40d3-828f-03188e472946",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1abda7cbc926ee79baed789f59b664741e50dd6d0077bc94acec768895110088"
+  },
+  "id": "rv5yhW7KQI7SPL9Q",
+  "tags": []
+}
