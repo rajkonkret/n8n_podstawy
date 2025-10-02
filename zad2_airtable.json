@@ -1,0 +1,163 @@
+{
+  "name": "zad2_airtable",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -416,
+        0
+      ],
+      "id": "b3cb8add-7f9c-413c-a470-7c9df3e90179",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "45947170-1ef0-490d-97b1-f952d314e2cf",
+              "leftValue": "={{ $json.Select }}",
+              "rightValue": "New",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "3719990b-dfa5-4a0c-8129-f471d5ab4e49",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "fromEmail": "automat@rajkonkret.pl",
+        "toEmail": "rajkonkret660@gmail.com",
+        "subject": "Nowe Zadanie Airtable",
+        "html": "=Nowe Zadanie Z Airtable\n{{ $('Search records').item.json['Field Name'] }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        208,
+        -96
+      ],
+      "id": "831159da-e23c-4884-8d33-3e0835a8e5df",
+      "name": "Send email",
+      "webhookId": "3ebd102e-2e71-4a4a-b8d1-b322c3d01704",
+      "credentials": {
+        "smtp": {
+          "id": "rYUOpkUcA3G0lXue",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "appovEQEJefOFmOI8",
+          "mode": "list",
+          "cachedResultName": "Manufacturing Database",
+          "cachedResultUrl": "https://airtable.com/appovEQEJefOFmOI8"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblbMVq9ehP6g5Jq4",
+          "mode": "list",
+          "cachedResultName": "Fields",
+          "cachedResultUrl": "https://airtable.com/appovEQEJefOFmOI8/tblbMVq9ehP6g5Jq4"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -208,
+        0
+      ],
+      "id": "69dc101c-9c02-4580-807f-13e4bb9534e3",
+      "name": "Search records",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "HL3KTSBIRUjAvYFm",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Search records",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Send email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search records": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "4d71bc5c-542e-4239-bc35-5d4ded2efbbe",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1abda7cbc926ee79baed789f59b664741e50dd6d0077bc94acec768895110088"
+  },
+  "id": "Z1NzXK8MMEl86VYw",
+  "tags": []
+}
