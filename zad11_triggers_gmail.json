@@ -1,0 +1,385 @@
+{
+  "name": "zad11_triggers_gmail",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "filters": {}
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -1024,
+        -32
+      ],
+      "id": "22403507-77b9-49f3-8f55-562f3fcc8a91",
+      "name": "Gmail Trigger",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "OiY7MgplezqE7y3z",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const temat = $node['konfiguracja'].json['temat'];\nconst kluczowe = $node['konfiguracja'].json['kluczowe'];\n\nconst PowiadomKierownika = kluczowe.some(slowo => temat.includes(slowo));\n\nreturn [{ PowiadomKierownika }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -608,
+        -32
+      ],
+      "id": "900b9369-3c4d-4755-95e2-3074e9241bf9",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "1e002324-f7f9-4aeb-b9b2-4f2272ab94c9",
+              "leftValue": "={{ $json.PowiadomKierownika }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -416,
+        -32
+      ],
+      "id": "6752148b-ed12-4a86-9038-5b3773692474",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "47cc4ea1-05b4-4f02-8007-089f070405e4",
+              "name": "kluczowe",
+              "value": "[\"ważne\", \"pilne\", \"awaria\",\"urgent\",\"pilny\",\"malfunction\",\"problem\"]",
+              "type": "array"
+            },
+            {
+              "id": "0f1d345e-195c-4ddd-9832-651932714886",
+              "name": "temat",
+              "value": "={{ $json.Subject }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -816,
+        -32
+      ],
+      "id": "1aaba71d-a6a6-4945-b9cb-a665b9ae3c83",
+      "name": "konfiguracja"
+    },
+    {
+      "parameters": {
+        "resource": "chatMessage",
+        "chatId": {
+          "__rl": true,
+          "value": "19:meeting_NzY3ZDEyZjQtOTk1YS00MTc4LTk5MGEtZmM4ZmEwYjU0YzMw@thread.v2",
+          "mode": "list",
+          "cachedResultName": "Automatyzacja workflow z n8n (meeting)",
+          "cachedResultUrl": "https://teams.microsoft.com/l/chat/19%3Ameeting_NzY3ZDEyZjQtOTk1YS00MTc4LTk5MGEtZmM4ZmEwYjU0YzMw%40thread.v2/0?tenantId=f2320f09-c352-4af9-9056-f37ac205532c"
+        },
+        "message": "Nowa pilana wiadomość!!!",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.microsoftTeams",
+      "typeVersion": 2,
+      "position": [
+        -416,
+        -224
+      ],
+      "id": "6255f260-a1fb-4fc3-8501-e8cd92e7076e",
+      "name": "Create chat message",
+      "webhookId": "25ae84e6-44c5-48ae-a7d9-58ed0dac62fb",
+      "credentials": {
+        "microsoftTeamsOAuth2Api": {
+          "id": "mPktTvQKDzMHXOY7",
+          "name": "Microsoft Teams account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Gmail Trigger').item.json.From }}",
+                    "rightValue": "rajkonkret.pl>",
+                    "operator": {
+                      "type": "string",
+                      "operation": "endsWith"
+                    },
+                    "id": "a8f5960f-420f-4e82-89b4-4ebf5cc97582"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "klient  z Polski"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "5b3077f2-2d9e-4f42-a00a-b5eba694f195",
+                    "leftValue": "={{ $('Gmail Trigger').item.json.From }}",
+                    "rightValue": "gmail.com>",
+                    "operator": {
+                      "type": "string",
+                      "operation": "endsWith"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Klien inny"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra"
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        -160,
+        -96
+      ],
+      "id": "a2176439-cdba-4893-a294-1f98732578c8",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "resource": "chatMessage",
+        "chatId": {
+          "__rl": true,
+          "value": "19:meeting_NzY3ZDEyZjQtOTk1YS00MTc4LTk5MGEtZmM4ZmEwYjU0YzMw@thread.v2",
+          "mode": "list",
+          "cachedResultName": "Automatyzacja workflow z n8n (meeting)",
+          "cachedResultUrl": "https://teams.microsoft.com/l/chat/19%3Ameeting_NzY3ZDEyZjQtOTk1YS00MTc4LTk5MGEtZmM4ZmEwYjU0YzMw%40thread.v2/0?tenantId=f2320f09-c352-4af9-9056-f37ac205532c"
+        },
+        "message": "Klient Z Polski",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.microsoftTeams",
+      "typeVersion": 2,
+      "position": [
+        48,
+        -208
+      ],
+      "id": "b6222700-0437-4632-b6f1-127c4977c707",
+      "name": "Create chat message1",
+      "webhookId": "542950c5-9f65-4d96-98b1-5347f1994a99",
+      "credentials": {
+        "microsoftTeamsOAuth2Api": {
+          "id": "mPktTvQKDzMHXOY7",
+          "name": "Microsoft Teams account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "automat@rajkonkret.pl",
+        "toEmail": "rajkonkret660@gmail.com",
+        "html": "awaria usługi",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        48,
+        48
+      ],
+      "id": "f506eea8-c48a-4c8e-934c-83249e5f11a8",
+      "name": "Send email",
+      "webhookId": "b126218f-9b7c-404e-9552-612d63434af0",
+      "credentials": {
+        "smtp": {
+          "id": "rYUOpkUcA3G0lXue",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "user",
+        "user": {
+          "__rl": true,
+          "value": "UPFR9GC0H",
+          "mode": "list",
+          "cachedResultName": "rajkonkret660"
+        },
+        "text": "inny klient",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        -176,
+        -313.5
+      ],
+      "id": "9243b2f3-2422-47d3-9646-6d720ba93ccb",
+      "name": "Send a message",
+      "webhookId": "cad6a4c3-17cc-48af-ba77-c3bd265ded9f",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "7QUgVZ69mxlWV4IM",
+          "name": "Slack account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "konfiguracja",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "konfiguracja": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Create chat message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create chat message": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Create chat message1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "176d3a1e-c65b-45df-88c6-aa3a30008f10",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1abda7cbc926ee79baed789f59b664741e50dd6d0077bc94acec768895110088"
+  },
+  "id": "yPRCcUArMKahLAXJ",
+  "tags": []
+}

@@ -1,0 +1,306 @@
+{
+  "name": "zad12",
+  "nodes": [
+    {
+      "parameters": {
+        "url": "=https://google.com/complete/search?output=toolbar&gl=pl&q={{ $json.Szukane }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -144,
+        16
+      ],
+      "id": "a3f9f50e-a658-4057-a49a-17842da9575b",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "toplevel.CompleteSuggestion",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        272,
+        16
+      ],
+      "id": "9c41034e-f4a7-45b5-a563-c41f6223a3db",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.xml",
+      "typeVersion": 1,
+      "position": [
+        64,
+        16
+      ],
+      "id": "d24a4e3c-345a-42d6-8c1c-b9510c1640ae",
+      "name": "XML"
+    },
+    {
+      "parameters": {
+        "sortFieldsUi": {
+          "sortField": [
+            {
+              "fieldName": "suggestion.data"
+            }
+          ]
+        },
+        "options": {
+          "disableDotNotation": false
+        }
+      },
+      "type": "n8n-nodes-base.sort",
+      "typeVersion": 1,
+      "position": [
+        480,
+        16
+      ],
+      "id": "bf91a313-fa68-4c75-b8d9-dc63931bd5a7",
+      "name": "Sort"
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "Sugestie"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        896,
+        16
+      ],
+      "id": "2d2baf30-f90c-4ca2-b05a-15e12c27ef7a",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "570c79cb-8497-4394-8a7b-40cc41402590",
+              "name": "Sugestie",
+              "value": "={{ $json.suggestion.data }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {
+          "ignoreConversionErrors": true
+        }
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        688,
+        16
+      ],
+      "id": "22dc54e4-f771-49b4-ba0c-a0ac417de272",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Pobierz dane wejściowe z poprzedniego węzła\nconst inputData = $('Aggregate').first().json\n\n// Pobierz wartości z Keywords i przekonwertuj je na string\nconst keywordsArray = inputData.Sugestie;\nconst keywordsString = keywordsArray.join(', ');\n\n// Zwróć wyniki w formacie string\nreturn [{\n  json: {\n    keywordsString: keywordsString\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1088,
+        16
+      ],
+      "id": "06fec69d-7b91-412c-834b-fc359894612e",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "path": "Kluczowe",
+        "formTitle": "Podaj szukane słowa",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Szukane",
+              "requiredField": true
+            }
+          ]
+        },
+        "responseMode": "=responseNode",
+        "options": {}
+      },
+      "id": "94fd2d54-ccd5-40ed-8ad6-76519059e83d",
+      "name": "Podaj słowo kluczowe",
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2,
+      "position": [
+        -448,
+        -224
+      ],
+      "webhookId": "3a2367ae-9138-4689-972a-1928d5ff254b",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "formTitle": "Podaj szukane słowo",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Szukane",
+              "requiredField": true
+            }
+          ]
+        },
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.3,
+      "position": [
+        -368,
+        16
+      ],
+      "id": "ec923417-9541-48f3-a3d5-364a8d8c907b",
+      "name": "Podaj słowo kluczowe1",
+      "webhookId": "3b566566-ce55-48e5-b1a4-a8347f814b38"
+    },
+    {
+      "parameters": {
+        "operation": "completion",
+        "completionTitle": "ty",
+        "completionMessage": "=<h2>Wynik</h2>\n<p>{{ $json.keywordsString }}</p>\n<p style=\"margin-top:16px\">\n  <a href=\"<<TU_WKLEJ_URL_TWOJEGO_FORM TRIGGERA>>\">Spróbuj ponownie</a>\n</p>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 2.3,
+      "position": [
+        1296,
+        16
+      ],
+      "id": "ae0c9f76-1efc-461b-ad1f-401689d67f80",
+      "name": "Form",
+      "webhookId": "40243dd1-7917-4d57-b65f-05264c867113"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "XML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "XML": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Sort",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sort": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Form",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Podaj słowo kluczowe": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Podaj słowo kluczowe1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "42dea160-d4a8-49c9-8fad-434d7f0a26a1",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1abda7cbc926ee79baed789f59b664741e50dd6d0077bc94acec768895110088"
+  },
+  "id": "gYAf5u1M59yMryF8",
+  "tags": []
+}
