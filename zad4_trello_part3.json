@@ -1,0 +1,426 @@
+{
+  "name": "zad4_trello",
+  "nodes": [
+    {
+      "parameters": {
+        "listId": "66756126195725a1203be209",
+        "name": "=TEST_N8N {{ $json.data[0].fields['Order ID'] }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.trello",
+      "typeVersion": 1,
+      "position": [
+        -144,
+        -192
+      ],
+      "id": "f0693fc1-d7f7-487e-8ba5-f760b56aee7d",
+      "name": "Create a card",
+      "credentials": {
+        "trelloApi": {
+          "id": "27jtPM2En4caxJcf",
+          "name": "Trello account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "appUnVUzwoj4h1MrK",
+          "mode": "list",
+          "cachedResultName": "airtable_orders.xlsx",
+          "cachedResultUrl": "https://airtable.com/appUnVUzwoj4h1MrK"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbl5Dueh3DQFkk8OW",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://airtable.com/appUnVUzwoj4h1MrK/tbl5Dueh3DQFkk8OW"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -960,
+        -16
+      ],
+      "id": "be6600b3-235b-4fb5-9188-7af7c105bb66",
+      "name": "Search records",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "HL3KTSBIRUjAvYFm",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "automat@rajkonkret.pl",
+        "toEmail": "rajkonkret660@gmail.com",
+        "subject": "Zamówienie z Airtable",
+        "html": "=Nowe zamówienie z Airtable \n{{ $json['Product Name'] }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        -784,
+        -192
+      ],
+      "id": "282b1426-d2f4-4615-99cd-a3e0ec5cc96e",
+      "name": "Send email",
+      "webhookId": "b0734f6a-f348-4a67-8ed2-64ace8dbbbcf",
+      "credentials": {
+        "smtp": {
+          "id": "rYUOpkUcA3G0lXue",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "e9c96eac-bea4-4c27-9355-d365e621491d",
+              "leftValue": "={{ $json['Status zamówienia'] }}",
+              "rightValue": "Nowe",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -752,
+        -16
+      ],
+      "id": "7fc44217-dfd7-4fa4-91bd-d2d4c5a4894f",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "appUnVUzwoj4h1MrK",
+          "mode": "list",
+          "cachedResultName": "airtable_orders.xlsx",
+          "cachedResultUrl": "https://airtable.com/appUnVUzwoj4h1MrK"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbl5Dueh3DQFkk8OW",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://airtable.com/appUnVUzwoj4h1MrK/tbl5Dueh3DQFkk8OW"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Status zamówienia": "W trakcie",
+            "Order ID": "={{ $('Search records').item.json['Order ID'] }}"
+          },
+          "matchingColumns": [
+            "Order ID"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Order ID",
+              "displayName": "Order ID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Product Name",
+              "displayName": "Product Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Quantity",
+              "displayName": "Quantity",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Customer",
+              "displayName": "Customer",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Firma X",
+                  "value": "Firma X"
+                },
+                {
+                  "name": "Firma Y",
+                  "value": "Firma Y"
+                },
+                {
+                  "name": "Firma Z",
+                  "value": "Firma Z"
+                },
+                {
+                  "name": "Firma Radek",
+                  "value": "Firma Radek"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Order Date",
+              "displayName": "Order Date",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Status zamówienia",
+              "displayName": "Status zamówienia",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Nowe",
+                  "value": "Nowe"
+                },
+                {
+                  "name": "W trakcie",
+                  "value": "W trakcie"
+                },
+                {
+                  "name": "Zakończone",
+                  "value": "Zakończone"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "updateAllMatches": true
+        }
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -512,
+        -192
+      ],
+      "id": "b8bb1c52-82d0-4755-b971-364441d0a4b4",
+      "name": "Update record",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "HL3KTSBIRUjAvYFm",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "seconds"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1168,
+        -16
+      ],
+      "id": "a2025913-7e30-4be3-a951-7b6125697ad8",
+      "name": "Schedule Trigger1"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        -320,
+        -192
+      ],
+      "id": "b190d50f-b466-4927-8ec6-012b918955f8",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "resource": "list",
+        "operation": "getAll",
+        "id": "sH32PVvR",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.trello",
+      "typeVersion": 1,
+      "position": [
+        -384,
+        -16
+      ],
+      "id": "6ee126f1-0663-4304-823c-4b893a24167d",
+      "name": "Get many lists",
+      "credentials": {
+        "trelloApi": {
+          "id": "27jtPM2En4caxJcf",
+          "name": "Trello account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "\n\n\n\n\n\n\n\n\n\n\n\n\n\nElement techniczny\nPozwala uzyskać id dla listy w Trello ",
+        "height": 288,
+        "width": 320
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -400,
+        -32
+      ],
+      "typeVersion": 1,
+      "id": "ff29e749-1160-456a-8f32-3aeff7c9d2a9",
+      "name": "Sticky Note"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Search records": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send email": {
+      "main": [
+        [
+          {
+            "node": "Update record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Send email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger1": {
+      "main": [
+        [
+          {
+            "node": "Search records",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update record": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Create a card",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "3cec2582-ce16-4bcf-a64f-f423978f75b8",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1abda7cbc926ee79baed789f59b664741e50dd6d0077bc94acec768895110088"
+  },
+  "id": "halx2vZ0WvoOYvFl",
+  "tags": []
+}
