@@ -1,0 +1,155 @@
+{
+  "name": "zad_jira",
+  "nodes": [
+    {
+      "parameters": {
+        "project": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "issueType": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.jira",
+      "typeVersion": 1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "e2e1d583-acd8-4b0a-ba8e-f25a138535e6",
+      "name": "Create an issue",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "path": "f5a673ee-2a33-46e2-ad06-b10e84b4a83b",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -416,
+        16
+      ],
+      "id": "701f7160-9820-445f-a5a6-94a2c571e093",
+      "name": "Webhook",
+      "webhookId": "f5a673ee-2a33-46e2-ad06-b10e84b4a83b"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "1ad3f0dd-45a8-4b2b-b55a-40b13e25d79b",
+              "leftValue": "",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -208,
+        16
+      ],
+      "id": "b598b315-27de-4fd2-afc6-657d323e89a7",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "resource": "channelMessage",
+        "teamId": {
+          "__rl": true,
+          "value": "93c80fca-e3ed-4401-a767-544a03d6f179",
+          "mode": "list",
+          "cachedResultName": "radosalw janiak"
+        },
+        "channelId": {
+          "__rl": true,
+          "value": "19:AGK1fZNWADMxyvIBRB0PE8ylO9O6NYSQzkcmL5tdpEc1@thread.tacv2",
+          "mode": "list",
+          "cachedResultName": "General",
+          "cachedResultUrl": "https://teams.cloud.microsoft/l/channel/19%3AAGK1fZNWADMxyvIBRB0PE8ylO9O6NYSQzkcmL5tdpEc1%40thread.tacv2/radosalw%20janiak?groupId=93c80fca-e3ed-4401-a767-544a03d6f179&tenantId=920c2aaa-735a-4c59-aeae-3e618167b4a4&allowXTenantAccess=True&ngc=True"
+        },
+        "message": "test",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.microsoftTeams",
+      "typeVersion": 2,
+      "position": [
+        208,
+        160
+      ],
+      "id": "23f4bebe-ed80-44f6-9707-08c62c425c94",
+      "name": "Create message",
+      "webhookId": "e9c7315b-edd1-4466-ad5f-87d20d6cc459",
+      "credentials": {
+        "microsoftTeamsOAuth2Api": {
+          "id": "mPktTvQKDzMHXOY7",
+          "name": "Microsoft Teams account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Create an issue",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "cd52aac8-fc14-4051-a0ad-e4f0b34b24dc",
+  "meta": {
+    "instanceId": "1abda7cbc926ee79baed789f59b664741e50dd6d0077bc94acec768895110088"
+  },
+  "id": "b6yd7jqjCHYOQuTb",
+  "tags": []
+}
