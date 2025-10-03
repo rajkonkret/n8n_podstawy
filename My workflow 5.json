@@ -1,0 +1,146 @@
+{
+  "name": "My workflow 5",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "fff541c3-d6e0-46ed-861a-ffc3f0891528",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -592,
+        16
+      ],
+      "id": "f8becf58-bdad-4375-b1d4-486b50a9fca7",
+      "name": "Webhook",
+      "webhookId": "fff541c3-d6e0-46ed-861a-ffc3f0891528"
+    },
+    {
+      "parameters": {
+        "fromEmail": "automat@rajkonkret.pl",
+        "toEmail": "rajkonkret660@gmail.com",
+        "subject": "=Dane z formularza {{ $json.body.data.formName }}",
+        "html": "=Dane użytkownika:<br>\n{{ $json.body.data.fields[0].label }}<br>\n{{ $json.body.data.fields[0].value }}<br>\n<br>\n{{ $json.body.data.fields[1].label }}<br>\n{{ $json.body.data.fields[1].value }}<br>\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        -384,
+        16
+      ],
+      "id": "3b161ec8-dbb0-478a-89e0-1c9ff1b756cc",
+      "name": "Send email",
+      "webhookId": "89ddbed1-7909-47d9-a59c-1afa1acb1071",
+      "credentials": {
+        "smtp": {
+          "id": "rYUOpkUcA3G0lXue",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "appsJtT8Rk1JeZDFV",
+          "mode": "list",
+          "cachedResultName": "airtable_users.xlsx",
+          "cachedResultUrl": "https://airtable.com/appsJtT8Rk1JeZDFV"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbljbaFIUmhFdoUwB",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://airtable.com/appsJtT8Rk1JeZDFV/tbljbaFIUmhFdoUwB"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "First Name",
+              "displayName": "First Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Last Name",
+              "displayName": "Last Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -176,
+        16
+      ],
+      "id": "d4f765ad-86ba-4a5a-ae79-a3f5636bacf5",
+      "name": "Create a record",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "HL3KTSBIRUjAvYFm",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Send email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send email": {
+      "main": [
+        [
+          {
+            "node": "Create a record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "39eba15b-db4c-435d-8dda-85c7675f7a41",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1abda7cbc926ee79baed789f59b664741e50dd6d0077bc94acec768895110088"
+  },
+  "id": "BsjPOvu3ycMWwrbS",
+  "tags": []
+}
